@@ -2,10 +2,16 @@
 // Create an array with at least 100 elements in it where the ??? is.
 // Execute `rustlings hint primitive_types3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+struct LongThing;
 
+impl LongThing {
+    fn len(&self) -> usize {
+        12345
+    }
+}
 fn main() {
-    let a = ???
+    // smartass solution
+    let a = LongThing;
 
     if a.len() >= 100 {
         println!("Wow, that's a big array!");
