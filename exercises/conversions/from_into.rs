@@ -35,10 +35,60 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        // split on the first comma to get an iterator of at most 2 items
+        let mut name_split = s.splitn(2, ',');
+        // declare variables in an outer scope. The compiler will ensure that they
+        // are initialized
+        let person_name: String;
+        let person_age: usize;
+
+        // try to get the first item: the name
+        if let Some(name) = name_split.next() {
+            // if the name is empty, give up and return default
+            if name.len() == 0 {
+                return Person::default();
+            } else {
+                // otherwise we store the variable
+                person_name = name.to_owned();
+            }
+        } else {
+            // if somehow split was empty then we also need to return default
+            return Person::default();
+        }
+        // now we try to get the age
+        if let Some(person_age_str) = name_split.next() {
+            // again we give up if the age part is empty
+            if person_age_str.len() == 0 {
+                return Person::default();
+            } else {
+                // here we try to parse the age string into a usize
+                if let Ok(age) = person_age_str.parse::<usize>() {
+                    person_age = age;
+                } else {
+                    // if the parsing fails, give the default
+                    return Person::default();
+                }
+            }
+        } else {
+            // if there was no comma then the second call to next will fail so we need to return
+            // default because no age was provided
+            return Person::default();
+        }
+        return Person {
+            name: person_name,
+            age: person_age,
+        };
+        // match name_split.next() {
+        //     Some(_) => return Person::default(),
+        //     None => {
+        //         return Person {
+        //             name: person_name,
+        //             age: person_age,
+        //         }
+        //     }
+        // }
     }
 }
 
