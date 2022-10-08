@@ -38,7 +38,7 @@ impl Default for Person {
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
         // split on the first comma to get an iterator of at most 2 items
-        let mut name_split = s.splitn(2, ',');
+        let mut name_split = s.split(',');
         // declare variables in an outer scope. The compiler will ensure that they
         // are initialized
         let person_name: String;
@@ -76,19 +76,15 @@ impl From<&str> for Person {
             // default because no age was provided
             return Person::default();
         }
-        return Person {
-            name: person_name,
-            age: person_age,
-        };
-        // match name_split.next() {
-        //     Some(_) => return Person::default(),
-        //     None => {
-        //         return Person {
-        //             name: person_name,
-        //             age: person_age,
-        //         }
-        //     }
-        // }
+        match name_split.next() {
+            Some(_) => return Person::default(),
+            None => {
+                return Person {
+                    name: person_name,
+                    age: person_age,
+                }
+            }
+        }
     }
 }
 
