@@ -28,8 +28,6 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
-
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
 // 2. Split the given string on the commas present in it
@@ -46,6 +44,55 @@ enum ParsePersonError {
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        // split on the first comma to get an iterator of at most 2 items
+        let mut name_split = s.split(',');
+        // declare variables in an outer scope. The compiler will ensure that they
+        // are initialized
+        let person_name: String;
+        let person_age: usize;
+        if s.len() == 0 {
+            // we have to handle the empty string case here
+            return Err(ParsePersonError::Empty);
+        }
+
+        // try to get the first item: the name
+        if let Some(name) = name_split.next() {
+            // if the name is empty, give up and return default
+            if name.len() == 0 {
+                return Err(ParsePersonError::NoName);
+            } else {
+                // otherwise we store the variable
+                person_name = name.to_owned();
+            }
+        } else {
+            // I'm pretty sure this can't happen because the split iterator always has at least one
+            // element
+            return Err(ParsePersonError::Empty);
+        }
+        // now we try to get the age
+        if let Some(person_age_str) = name_split.next() {
+            // here we try to parse the age string into a usize
+            let parse_res = person_age_str.parse::<usize>();
+            match parse_res {
+                Ok(age) => {
+                    person_age = age;
+                }
+                Err(e) => return Err(ParsePersonError::ParseInt(e)),
+            }
+        } else {
+            // if there was no comma then the second call to next will fail so we need to return
+            // default because no age was provided
+            return Err(ParsePersonError::BadLen);
+        }
+        match name_split.next() {
+            Some(_) => return Err(ParsePersonError::BadLen),
+            None => {
+                return Ok(Person {
+                    name: person_name,
+                    age: person_age,
+                })
+            }
+        }
     }
 }
 
