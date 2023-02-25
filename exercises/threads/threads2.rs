@@ -14,8 +14,8 @@ struct JobStatus {
 fn main() {
     let status = Arc::new(Mutex::new(JobStatus { jobs_completed: 0 }));
     let mut handles = vec![];
-    for i in 0..10 {
-        let status_shared = status.clone();
+    for _ in 0..10 {
+        let status_shared = Arc::clone(&status);
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(i * 100 + 250));
             let mut guard = status_shared.lock().unwrap();
