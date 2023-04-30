@@ -1,3 +1,5 @@
+temp_*
+*rcgu.o
 *.swp
 target/
 **/*.rs.bk
